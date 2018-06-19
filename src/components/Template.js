@@ -4,6 +4,7 @@ import { Route } from "react-router-dom";
 import { AlbumList } from "./pages";
 import { NavLink } from "react-router-dom";
 import ReviewPage from "./pages/ReviewPage";
+import Clock from "react-live-clock";
 
 const menuName = ["All", "Studio Album", "Mini Album", "Single"];
 const Menu = menuName.map(value => {
@@ -13,7 +14,7 @@ const Menu = menuName.map(value => {
   return (
     <NavLink
       style={{
-        padding: "7rem",
+        margin: "7rem",
         fontSize: " 1rem",
         cursor: "pointer",
         textDecoration: "none",
@@ -53,7 +54,36 @@ const Menu = menuName.map(value => {
 const Template = ({ data }) => {
   return (
     <div>
-      <header>hi</header>
+      <header style={{ display: "flex", backgroundColor: "#ffd1c3" }}>
+        <img
+          style={{
+            width: "9rem",
+            height: "2rem",
+            padding: "0.5rem",
+            cursor: "pointer"
+          }}
+          alt="logo"
+          onClick={() => {
+            window.location.href = "/";
+          }}
+          src="https://img.fmnation.net/files/attach/images/425025/032/213/022/e8c44c8b500140cec643291a5d2fecf4.png"
+        />
+        <div
+          style={{
+            fontSize: "2rem",
+            color: "white",
+            padding: "0.2rem",
+            flex: "1"
+          }}
+        >
+          {console.log(Clock)}
+          <Clock
+            format={"YYYY년 MM월 DD일 HH:mm:ss"}
+            ticking={true}
+            timezone={"Asia/Seoul"}
+          />
+        </div>
+      </header>
       <main>
         <div className="main-image">
           <Route

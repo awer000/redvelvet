@@ -25,4 +25,5 @@ main {
 
 .preview {
   background-color: white;
+  min-height: 0%;
 }

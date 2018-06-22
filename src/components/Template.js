@@ -5,6 +5,7 @@ import { AlbumList } from "./pages";
 import { NavLink } from "react-router-dom";
 import ReviewPage from "./pages/ReviewPage";
 import Clock from "react-live-clock";
+import MainImage from "./pages/MainImage";
 
 const menuName = ["All", "Studio Album", "Mini Album", "Single"];
 const Menu = menuName.map(value => {
@@ -86,6 +87,7 @@ const Template = ({ data }) => {
       </header>
       <main>
         <div className="main-image">
+          <Route exact path="/" render={props => <MainImage {...props} />} />
           <Route
             path="/:album/:name?"
             render={props => <ReviewPage {...props} data={data} />}

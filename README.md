@@ -1,3 +1,6 @@
+> 이 앱은 create-react-app 으로 만들어졌습니다.
+
+
 주요 기능 안내
 ===============
 
@@ -23,6 +26,10 @@ import AlbumList from "./pages/AlbumList";
 import { NavLink } from "react-router-dom";
 import ReviewPage from "./pages/ReviewPage";
 import MainImage from "./pages/MainImage";
+
+// 메뉴 바를 만들기 위해 메뉴 이름에 쓰일 이름을 배열에 넣고, 그 배열을 map 함수를 이용해 각각의 값에 NavLink를 만들어서 클릭하면 현재 이름에 따라서
+// 각각 다른 route로 이동하게 끔 설정함.
+
 
 const menuName = ["All", "Studio Album", "Mini Album", "Single"];
 const Menu = menuName.map(value => {

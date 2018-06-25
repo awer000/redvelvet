@@ -18,7 +18,6 @@ const MainImage = () => {
       return "https://t1.daumcdn.net/cfile/tistory/21497C4A5962416716?original";
     }
   };
-  console.log(time);
   return (
     <div
       style={{

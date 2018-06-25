@@ -10,7 +10,7 @@ import MainImage from "./pages/MainImage";
 const menuName = ["All", "Studio Album", "Mini Album", "Single"];
 const Menu = menuName.map(value => {
   const activeStyle = {
-    color: "#777777"
+    color: "white"
   };
   return (
     <NavLink
@@ -19,7 +19,7 @@ const Menu = menuName.map(value => {
         fontSize: " 1rem",
         cursor: "pointer",
         textDecoration: "none",
-        color: "white"
+        color: "#fd3a38"
       }}
       key={value}
       exact
@@ -55,7 +55,14 @@ const Menu = menuName.map(value => {
 const Template = ({ data }) => {
   return (
     <div>
-      <header style={{ display: "flex", backgroundColor: "#ffd1c3" }}>
+      <header
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#ffd1c3"
+        }}
+      >
         <img
           style={{
             width: "9rem",
@@ -69,21 +76,6 @@ const Template = ({ data }) => {
           }}
           src="https://img.fmnation.net/files/attach/images/425025/032/213/022/e8c44c8b500140cec643291a5d2fecf4.png"
         />
-        <div
-          style={{
-            fontSize: "2rem",
-            color: "white",
-            padding: "0.2rem",
-            flex: "1"
-          }}
-        >
-          {console.log(Clock)}
-          <Clock
-            format={"YYYY년 MM월 DD일 HH:mm:ss"}
-            ticking={true}
-            timezone={"Asia/Seoul"}
-          />
-        </div>
       </header>
       <main>
         <div className="main-image">

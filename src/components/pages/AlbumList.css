@@ -1,5 +1,5 @@
 .album-item:hover {
-  background-color: white;
+  background-color: #ffd1c3;
   opacity: 0.5;
   cursor: pointer;
 }

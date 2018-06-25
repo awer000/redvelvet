@@ -15,7 +15,7 @@
   * Template.js => 구조 컴포넌트
   
  
- AlbumList.js 구조
+ Template.js 구조
  ----------------
  
 ```
@@ -65,9 +65,17 @@ const Menu = menuName.map(value => {
   );
 });
 
+// Template 컴포넌트. 만들어둔 data.json의 데이터를 props로 받아와서 사용 할 수 있게 함.
+// 구조는 크게 header, main으로 나뉘어져 있는데, main은 세부적으로 main-image, menu, preview로 나뉘어져 있음.
+
+
 const Template = ({ data }) => {
   return (
     <div>
+    
+    // header의 로고를 클릭하면 첫 화면으로 새로고침 되면서 이동한다.
+    
+    
       <header
         style={{
           display: "flex",
@@ -91,6 +99,10 @@ const Template = ({ data }) => {
         />
       </header>
       <main>
+      
+      // main-image 부분은 route를 설정하여, 홈 화면일 경우는 MainImage를 나타나게 했으며, /album/name url이 있을 경우
+      // album명과 name에 따라서 각각의 앨범을 소개하는 페이지를 나타내는 ReviewPage를 불러오게 하였다.
+      
         <div className="main-image">
           <Route exact path="/" render={props => <MainImage {...props} />} />
           <Route
@@ -98,7 +110,12 @@ const Template = ({ data }) => {
             render={props => <ReviewPage {...props} data={data} />}
           />
         </div>
+        
+        //맨 위에 만들어 놓은 Menu 컴포넌트를 불러온다.
         <div className="menu">{Menu}</div>
+        
+        // preview에서는 route로 앨범명에 따라서 정규, 미니, 싱글 앨범인지 아닌지에 따라서 각각의 리스트를 만들어 놓은 
+        // AlbumList 컴포넌트를 불러오게 하였다.
         <div className="preview">
           <Route
             path="/:name"
@@ -111,5 +128,74 @@ const Template = ({ data }) => {
 };
 
 export default Template;
+
+```
+
+AlbumList.js 구조
+------------
+
+```
+import React from "react";
+import "./AlbumList.css";
+import { NavLink } from "react-router-dom";
+
+//props 
+
+const AlbumList = ({ match, data }) => {
+  const listMaker = album => {
+    const albumList = album.map(value => {
+      return (
+        <NavLink
+          to={`${match.url}/${value.name}`}
+          key={value.name}
+          className="album-item"
+          style={{
+            fontSize: "0.7rem",
+            padding: "1rem",
+            textDecoration: "none",
+            color: "black"
+          }}
+        >
+          <img
+            style={{ width: "10rem", height: "10rem" }}
+            src={value.img}
+            alt={value.name}
+          />
+          <div style={{ width: "10rem" }}>
+            <p style={{ fontSize: "0.8rem" }}>
+              {value.name.length > 22
+                ? `${value.name.substring(0, 19)}...`
+                : value.name}
+            </p>
+            <p>발매일: {value.release}</p>
+          </div>
+        </NavLink>
+      );
+    });
+    return albumList;
+  };
+  const allList = [
+    ...listMaker(data.album.regular),
+    ...listMaker(data.album.mini),
+    ...listMaker(data.album.single)
+  ];
+  return (
+    <div style={{ padding: "3rem" }}>
+      {match.params.name === "all" ? (
+        <div style={{ display: "flex", flexWrap: "wrap" }}>{allList}</div>
+      ) : match.params.name === "studio-album" ? (
+        <div style={{ display: "flex" }}>{listMaker(data.album.regular)}</div>
+      ) : match.params.name === "mini-album" ? (
+        <div style={{ display: "flex" }}>{listMaker(data.album.mini)}</div>
+      ) : match.params.name === "single" ? (
+        <div style={{ display: "flex" }}>{listMaker(data.album.single)}</div>
+      ) : (
+        undefined
+      )}
+    </div>
+  );
+};
+
+export default AlbumList;
 
 ```

@@ -139,9 +139,15 @@ import React from "react";
 import "./AlbumList.css";
 import { NavLink } from "react-router-dom";
 
-//props 
+//props로 match, data를 받아와서 사용한다. match는 현재 url의 파라미터를 가져와서 사용할 수가 있다.
+
 
 const AlbumList = ({ match, data }) => {
+
+  // listMaker 함수를 만든다. 이 함수는 albumList라는 함수를 반환하는데, 
+  // 배열인 인자를 받아와서, map함수를 통하여 각 배열의 값을 NavLink컴포넌트로 감싸고,
+  // img 태크로 앨범 표지를 나타내고, 발매일이 나와있는 작은 컴포넌트를 리턴하는 함수이다.
+  
   const listMaker = album => {
     const albumList = album.map(value => {
       return (
@@ -174,11 +180,20 @@ const AlbumList = ({ match, data }) => {
     });
     return albumList;
   };
+  
+  // 메뉴의 All 버튼을 클릭하면 모든 앨범을 나타내야 하므로, allList라는 배열을 따로 만들어서 그 배열 안에 
+  // 위에서 만든 listMaker 함수를 적용하여 spread 연산자를 이용해 배열 안에서 각각의 값으로 풀어준다.
+  
   const allList = [
     ...listMaker(data.album.regular),
     ...listMaker(data.album.mini),
     ...listMaker(data.album.single)
   ];
+  
+  // 
+  
+  // 각각의 조건에 따라서 함수를 호출한다. match.params.name의 값에 따라서 listMaker 함수에 각각 다른 인자를 넣어서
+  // 값을 반환하고, 그 값을 렌더링 한다.
   return (
     <div style={{ padding: "3rem" }}>
       {match.params.name === "all" ? (
@@ -197,5 +212,228 @@ const AlbumList = ({ match, data }) => {
 };
 
 export default AlbumList;
+
+```
+
+MainImage.js
+------
+
+```
+import React from "react";
+import moment from "moment";
+
+
+const MainImage = () => {
+
+  // 시간대에 따라서 각각 다른 이미지를 배경으로 하는 함수를 만들었다. 
+  // moment.js 라이브러리를 사용하여, 현재 시간을 확인하고 hh:mm:ss 중 hh에 해당하는 부분만 잘라서 함수에서 사용한다.
+  
+  const time = moment()
+    .format()
+    .slice(11, 13);
+    
+  
+  const timeImage = () => {
+    if (time >= 6 && time < 11) {
+      return "https://t1.daumcdn.net/cfile/tistory/2402BB505962409C33?original";
+    } else if (time >= 11 && time < 16) {
+      return "https://t1.daumcdn.net/cfile/tistory/2769F24C596240AB40?original";
+    } else if (time >= 16 && time < 21) {
+      return "https://t1.daumcdn.net/cfile/tistory/2215284E596240BF01?original";
+    } else if (time >= 1 && time < 6) {
+      return "https://t1.daumcdn.net/cfile/tistory/23451350596241552A?original";
+    } else {
+      return "https://t1.daumcdn.net/cfile/tistory/21497C4A5962416716?original";
+    }
+  };
+  return (
+  
+  // 리턴하는 div안에 style을 직접 지정하고, backgroundImage는 백틱 구문을 사용해서 url안에 함수를 사용할 수 있도록 했다.
+    <div
+      style={{
+        width: "100vw",
+        height: "35rem",
+        backgroundImage: `url(${timeImage()})`,
+        backgroundSize: "contain"
+      }}
+    />
+  );
+};
+
+export default MainImage;
+
+```
+
+
+ReviewPage.js
+--------
+
+```
+import React from "react";
+
+const ReviewPage = ({ match, data }) => {
+
+  //각 메뉴 (All, STUDIO ALBUM, MINI ALBUM, SINGLE) 를 누를때마다 기본 이미지를 다르게 설정하기위해 만든 함수이다.
+  //params를 인자로 받아와서, 이 값에 따라서 이미지파일의 url주소를 리턴하는 함수이다.
+  
+  const urlMaker = params => {
+    if (params === "all") {
+      return "https://i.pinimg.com/originals/3b/14/51/3b145111d179a9d1594a86e534461887.jpg";
+    } else if (params === "mini-album") {
+      return "https://i.pinimg.com/originals/bb/ee/96/bbee9677f4fadcbc6add18e59f30c37f.png";
+    } else if (params === "studio-album") {
+      return "https://i.pinimg.com/originals/eb/9a/41/eb9a4104a9182ec62701566535fdac55.jpg";
+    } else if (params === "single") {
+      return "https://i.imgur.com/qLm6Lg0.jpg";
+    }
+  };
+  
+  // params의 값에 따라서, data에서 가져온 앨범의 정보를 가져오는 함수이다.
+  
+  const reviewAlbum = album => {
+    if (album === "studio-album") {
+      const thisAlbum = data.album.regular.find(
+        value => value.name === match.params.name
+      );
+      return thisAlbum;
+    } else if (album === "mini-album") {
+      const thisAlbum = data.album.mini.find(
+        value => value.name === match.params.name
+      );
+      return thisAlbum;
+    } else if (album === "single") {
+      const thisAlbum = data.album.single.find(
+        value => value.name === match.params.name
+      );
+      return thisAlbum;
+    } else {
+      const all = [
+        ...data.album.regular,
+        ...data.album.mini,
+        ...data.album.single
+      ];
+      const thisAlbum = all.find(value => value.name === match.params.name);
+      return thisAlbum;
+    }
+  };
+  
+  // 위 함수의 값으로 리턴된 값을 인자로 받아서, 실제 렌더링 할 컴포넌트를 리턴하는 함수이다.
+  
+  const returnDiv = thisAlbum => {
+    return (
+      <div
+        className="bgBlur"
+        key={thisAlbum.name}
+        style={{
+          display: "flex",
+          zIndex: "5",
+          width: "100%",
+          height: "100%",
+          backgroundColor: "white"
+        }}
+      >
+        <div
+          className="blur"
+          style={{
+            backgroundImage: `url(${thisAlbum.img})`,
+            width: "inherit",
+            height: "35rem",
+            zIndex: "10",
+            position: "absolute",
+            opacity: "0.9",
+            filter: "blur(5px)"
+          }}
+        />
+        <div
+          className="review"
+          style={{ display: "flex", zIndex: "20", color: "#333333" }}
+        >
+          <div style={{ padding: "2rem", height: "30rem" }}>
+            <img
+              style={{ width: "20rem" }}
+              src={thisAlbum.img}
+              alt={thisAlbum.name}
+            />
+            <h1 style={thisAlbum.name.length > 3 && { fontSize: "2rem" }}>
+              {thisAlbum.name}
+            </h1>
+            <h3>장르: {thisAlbum.genres}</h3>
+            <h3>발매일: {thisAlbum.release}</h3>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              margin: "1rem",
+              backgroundColor: "white",
+              height: "30rem",
+              opacity: "0.8",
+              paddingTop: "1rem"
+            }}
+          >
+            <p
+              style={{
+                padding: "1.5rem",
+                paddingTop: "0",
+                fontSize: "0.9rem",
+                lineHeight: "160%",
+                height: "auto"
+              }}
+            >
+              {thisAlbum.explanation}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  };
+ 
+  // 만약 name 파라미터가 없을 경우, 기본 이미지를 리턴하게 하였다.
+  // 이때 사용된 함수는 위에서 만든 함수중 urlMaker 함수이다. 
+  if (match.params.name === undefined) {
+    return (
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          backgroundColor: "white",
+          zIndex: "5"
+        }}
+      >
+        <div
+          style={{
+            width: "inherit",
+            height: "35rem",
+            position: "absolute",
+            zIndex: "10",
+            backgroundImage: `
+              url(${urlMaker(match.params.album)})
+            `,
+            backgroundSize: "cover"
+          }}
+        />
+      </div>
+    );
+  }
+ 
+  // name 파라미터가 있을 경우 아래의 구문이 실행되는데, album 파라미터의 값에 따라서 위에서 만든 두개의 함수를 이용하여 
+  // 컴포넌트가 렌더링 되게 만들었다.
+  
+  if (match.params.album === "studio-album") {
+    const thisAlbum = reviewAlbum(match.params.album);
+    return returnDiv(thisAlbum);
+  } else if (match.params.album === "mini-album") {
+    const thisAlbum = reviewAlbum(match.params.album);
+    return returnDiv(thisAlbum);
+  } else if (match.params.album === "single") {
+    const thisAlbum = reviewAlbum(match.params.album);
+    return returnDiv(thisAlbum);
+  } else {
+    const thisAlbum = reviewAlbum(match.params.album);
+    return returnDiv(thisAlbum);
+  }
+};
+
+export default ReviewPage;
 
 ```
